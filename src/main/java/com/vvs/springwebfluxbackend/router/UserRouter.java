@@ -18,6 +18,6 @@ public class UserRouter {
   public RouterFunction<ServerResponse> userRouterFunction(UserHandler userHandler) {
     return RouterFunctions
       .route(GET("/users").and(accept(MediaType.APPLICATION_JSON)), userHandler::getUsers)
-      .andRoute(GET("/user").and(accept(MediaType.APPLICATION_JSON)), userHandler::getUser);
+      .andRoute(GET("/user/{email}").and(accept(MediaType.APPLICATION_JSON)), userHandler::getUser);
   }
 }

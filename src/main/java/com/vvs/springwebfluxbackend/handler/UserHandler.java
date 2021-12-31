@@ -28,8 +28,8 @@ public class UserHandler {
   }
 
   public Mono<ServerResponse> getUser(ServerRequest request) {
-    Mono<UserDTO> response = request.bodyToMono(UserDTO.class)
-      .flatMap(userDTO -> userService.getUser(userDTO.getEmail()))
+    Mono<UserDTO> response = Mono.just(UserDTO.class)
+      .flatMap(userDTO -> userService.getUser(request.pathVariable("email")))
       .map(userDetails -> userDetails);
     
     return ServerResponse
@@ -37,5 +37,4 @@ public class UserHandler {
       .contentType(MediaType.APPLICATION_JSON)
       .body(response, UserDTO.class);
   }
-
 }
