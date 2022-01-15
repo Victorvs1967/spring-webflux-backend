@@ -1,6 +1,7 @@
 package com.vvs.springwebfluxbackend.handler;
 
 import com.vvs.springwebfluxbackend.dto.UserDTO;
+import com.vvs.springwebfluxbackend.repository.UserRepository;
 import com.vvs.springwebfluxbackend.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,4 +38,17 @@ public class UserHandler {
       .contentType(MediaType.APPLICATION_JSON)
       .body(response, UserDTO.class);
   }
+
+  public Mono<ServerResponse> updateUser(ServerRequest request) {
+    Mono<UserDTO> response = request.bodyToMono(UserDTO.class)
+      .flatMap(userDTO -> userService.updateUser(userDTO))
+      .map(user -> user);
+      
+
+    return ServerResponse
+        .ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response, UserDTO.class);
+  }
+
 }

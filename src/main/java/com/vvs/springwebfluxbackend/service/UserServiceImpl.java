@@ -7,6 +7,7 @@ import com.vvs.springwebfluxbackend.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import reactor.core.publisher.Flux;
@@ -19,6 +20,8 @@ public class UserServiceImpl implements UserService {
   private UserRepository userRepository;
   @Autowired
   private UserMapper userMapper;
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   @Override
   public Mono<UserDTO> getUser(String email) {
@@ -33,5 +36,14 @@ public class UserServiceImpl implements UserService {
       .map(userMapper::toDTO)
       .switchIfEmpty(Mono.empty());
 	}
+
+  @Override
+  public Mono<UserDTO> updateUser(UserDTO user) {
+    return userRepository
+      .findUserByEmail(user.getEmail())
+      .doOnNext(usr -> user.setPassword(passwordEncoder.encode(usr.getPassword())))
+      .flatMap(userRepository::save)
+      .map(userMapper::toDTO);
+  }
 
 }

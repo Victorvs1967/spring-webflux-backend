@@ -8,4 +8,5 @@ import reactor.core.publisher.Mono;
 public interface UserService {
   Flux<UserDTO> getUsers();
   Mono<UserDTO> getUser(String email);
+  Mono<UserDTO> updateUser(UserDTO user);
 }
