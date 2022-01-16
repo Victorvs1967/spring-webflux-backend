@@ -3,6 +3,7 @@ package com.vvs.springwebfluxbackend.service;
 import com.vvs.springwebfluxbackend.dto.UserDTO;
 import com.vvs.springwebfluxbackend.error.GlobalException;
 import com.vvs.springwebfluxbackend.mapper.UserMapper;
+import com.vvs.springwebfluxbackend.model.User;
 import com.vvs.springwebfluxbackend.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +39,26 @@ public class UserServiceImpl implements UserService {
 	}
 
   @Override
-  public Mono<UserDTO> updateUser(UserDTO user) {
-    return userRepository
-      .findUserByEmail(user.getEmail())
-      .doOnNext(usr -> user.setPassword(passwordEncoder.encode(usr.getPassword())))
-      .flatMap(userRepository::save)
+  public Mono<UserDTO> updateUser(UserDTO userDTO) {
+    Mono<User> userDB = userRepository.findUserByEmail(userDTO.getEmail());
+    Mono<User> user = userDB
+      .flatMap(usr -> 
+        Mono.just(userDTO)
+        .map(userMapper::fromDTO)
+        .doOnSuccess(u -> u.setId(usr.getId())))
+        .doOnSuccess(u -> u.setPassword(passwordEncoder.encode(userDTO.getPassword())));
+
+    return user
+      .flatMap(this::save)
       .map(userMapper::toDTO);
   }
 
+  private Mono<User> save(User user) {
+    return Mono.fromSupplier(() -> {
+      userRepository
+        .save(user)
+        .subscribe();
+      return user;
+    });
+  }
 }

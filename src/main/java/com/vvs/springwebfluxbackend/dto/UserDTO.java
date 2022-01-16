@@ -27,7 +27,7 @@ public class UserDTO {
   private String password;
   private String firstName;
   private String lastName;
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  // @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private UserRole role = UserRole.USER;
   private Instant onCreated;
   private Instant onUpdated;
