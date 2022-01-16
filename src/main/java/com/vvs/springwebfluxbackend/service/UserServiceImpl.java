@@ -53,6 +53,13 @@ public class UserServiceImpl implements UserService {
       .map(userMapper::toDTO);
   }
 
+  @Override
+  public Mono<UserDTO> deleteUser(UserDTO userDTO) {
+    return userRepository.findUserByEmail(userDTO.getEmail())
+      .flatMap(this::delete)
+      .map(userMapper::toDTO);
+  }
+  
   private Mono<User> save(User user) {
     return Mono.fromSupplier(() -> {
       userRepository
@@ -61,4 +68,14 @@ public class UserServiceImpl implements UserService {
       return user;
     });
   }
+
+  private Mono<User> delete(User user) {
+    return Mono.fromSupplier(() -> {
+      userRepository
+        .delete(user)
+        .subscribe();
+      return user;
+    });
+  }
+
 }

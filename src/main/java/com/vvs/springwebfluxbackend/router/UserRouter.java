@@ -19,6 +19,7 @@ public class UserRouter {
     return RouterFunctions
       .route(GET("/users").and(accept(MediaType.APPLICATION_JSON)), userHandler::getUsers)
       .andRoute(GET("/user/{email}").and(accept(MediaType.APPLICATION_JSON)), userHandler::getUser)
-      .andRoute(PUT("/user").and(accept(MediaType.APPLICATION_JSON)), userHandler::updateUser);
+      .andRoute(PUT("/user").and(accept(MediaType.APPLICATION_JSON)), userHandler::updateUser)
+      .andRoute(DELETE("/user").and(accept(MediaType.APPLICATION_JSON)), userHandler::deleteUser);
   }
 }

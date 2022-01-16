@@ -43,7 +43,17 @@ public class UserHandler {
     Mono<UserDTO> response = request.bodyToMono(UserDTO.class)
       .flatMap(userDTO -> userService.updateUser(userDTO))
       .map(user -> user);
-      
+
+    return ServerResponse
+        .ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response, UserDTO.class);
+  }
+
+  public Mono<ServerResponse> deleteUser(ServerRequest request) {
+    Mono<UserDTO> response = request.bodyToMono(UserDTO.class)
+      .flatMap(userDTO -> userService.deleteUser(userDTO))
+      .map(user -> user);
 
     return ServerResponse
         .ok()
