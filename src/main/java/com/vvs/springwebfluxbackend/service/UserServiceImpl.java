@@ -40,8 +40,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Mono<UserDTO> updateUser(UserDTO userDTO) {
-    Mono<User> userDB = userRepository.findUserByEmail(userDTO.getEmail());
-    return userDB
+    return userRepository.findUserByEmail(userDTO.getEmail())
       .flatMap(user -> 
         Mono.just(userDTO)
         .map(userMapper::fromDTO)
