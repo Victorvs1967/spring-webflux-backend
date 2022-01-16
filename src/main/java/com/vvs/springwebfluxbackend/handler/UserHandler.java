@@ -51,8 +51,8 @@ public class UserHandler {
   }
 
   public Mono<ServerResponse> deleteUser(ServerRequest request) {
-    Mono<UserDTO> response = request.bodyToMono(UserDTO.class)
-      .flatMap(userDTO -> userService.deleteUser(userDTO))
+    Mono<UserDTO> response = Mono.just(UserDTO.class)
+      .flatMap(userDTO -> userService.deleteUser(request.pathVariable("email")))
       .map(user -> user);
 
     return ServerResponse
