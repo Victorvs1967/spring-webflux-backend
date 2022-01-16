@@ -41,14 +41,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public Mono<UserDTO> updateUser(UserDTO userDTO) {
     Mono<User> userDB = userRepository.findUserByEmail(userDTO.getEmail());
-    Mono<User> user = userDB
-      .flatMap(usr -> 
+    return userDB
+      .flatMap(user -> 
         Mono.just(userDTO)
         .map(userMapper::fromDTO)
-        .doOnSuccess(u -> u.setId(usr.getId())))
-        .doOnSuccess(u -> u.setPassword(passwordEncoder.encode(userDTO.getPassword())));
-
-    return user
+        .doOnSuccess(usr -> usr.setId(user.getId())))
+        .doOnSuccess(usr -> usr.setPassword(passwordEncoder.encode(userDTO.getPassword())))
       .flatMap(this::save)
       .map(userMapper::toDTO);
   }
